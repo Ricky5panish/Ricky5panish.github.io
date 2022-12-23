@@ -7,7 +7,7 @@ layout: default
 ## Introduction
 
 In the following examples I will show how we program a PE runtime crypter for x64 applications in C++.
-Prior knowledge of C++, WinAPI, PE file format is welcome.
+Prior knowledge of C++, WinAPI and PE file format is welcome.
 Crypter are used by hackers / penetration testers to evade antivirus detection by encrypting malware. This makes it possible to place and execute the malware on the target system without alarms.
 
 ## detection options
