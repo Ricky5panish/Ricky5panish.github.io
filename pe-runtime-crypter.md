@@ -128,6 +128,10 @@ If we take a look at the stub with CFF Explorer we can find our attached file un
 ...
 
 I created a x64 powershell_reverse_tcp with Metasploit to test the detection rate.
+Here we see the fresh payload from metasploit
+!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/msfPayload.png)
+
+And here the crypted payload
 ...
 
 ## Tips for improvement
