@@ -25,7 +25,7 @@ At the end I will give some tips to prevent dynamic analysis and also make it a 
 The main task of our crypter is to obfuscate an executable through encryption and thereby bypass the signature-based detection of AVs. To ensure this, the decrypted code must must be executed in memory so that it never touches the hard disk.
 
 ## Why C++?
-firstly because C++ is compiled which in itself is a security layer if we don't want someone to be able to easily inspect our source code. Also, C++ is a native programming language, which means that C/C++ is compiled directly into assembly, which is interpreted by the processor. C# or Java are in contrast to C++ unhandled programming languages which are interpreted by a runtime environment. Executables of unhandled languages are compiled into an intermediate product (Bytecode) that is understandable for the runtime environment.
+Firstly because C++ is compiled which in itself is a security layer if we don't want someone to be able to easily inspect our source code. Also, C++ is a native programming language, which means that C/C++ is compiled directly into assembly, which is interpreted by the processor. C# or Java are in contrast to C++ unhandled programming languages which are interpreted by a runtime environment. Executables of unhandled languages are compiled into an intermediate product (Bytecode) that is understandable for the runtime environment.
 This Bytecode is much easier to reverse and read than assembly.
 And finally, with C++ we have the possibility to obfuscate our source code really effectively on compiler level (e.g. by control flow flattering).
 
