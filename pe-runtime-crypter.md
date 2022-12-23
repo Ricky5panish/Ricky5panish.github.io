@@ -103,12 +103,12 @@ And we encrypt the data with XOR and the key "k" exactly like in the stub before
 Our crypter must now write the stub to disk.
 ...
 
-Now we have to add the encrypted data as resource to our stub. For this we use BeginUpdateResource, UpdateResource and EndUpdateResource. As I mentioned before we have to make sure that we use the same resource name and resource type as in the stub. Otherwise our stub program will not find a resource to work with.
+Now we have to add the encrypted data as resource to our stub. For this we use `BeginUpdateResource`, `UpdateResource` and `EndUpdateResource`. As I mentioned before we have to make sure that we use the same resource name and resource type as in the stub. Otherwise our stub program will not find a resource to work with.
 ...
 
 Before compiling we insert the raw code as byte array into our code.
 I use the HxD hexeditor to open my stub.exe and export the raw code to a .c file.
-...
+!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/embed.gif)
 
 This .c file contains a byte array from our stub which we now simply copy and replace with our placeholder above the main function.
 We also compile our crypter in release mode aaand...
@@ -117,22 +117,22 @@ Congratulations we have coded our own x64 PE runtime crypter!
 
 ## Lets test!
 I have taken a new C++ window application for testing.
-...
+!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/test.gif)
 
 ### It works :)
 
 In the task manager we see our window application running in a new process under our stub.
-...
+!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/taskmgr.png)
 
 If we take a look at the stub with CFF Explorer we can find our attached file under "resources". Also it is clear to see that the file is encrypted.
-...
+!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/encrypted.png)
 
 I created a x64 powershell_reverse_tcp with Metasploit to test the detection rate.
 Here we see the fresh payload from metasploit
 !(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/msfPayload.png)
 
 And here the crypted payload
-...
+!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/crypted.png)
 
 ## Tips for improvement
 - In any case, a better encryption method like AES would be much saver as some AVs are able to crack XOR. 
@@ -153,5 +153,6 @@ And here the crypted payload
 This could be files like "C:\Windows\System32\VBox*.dll" but also registry entries.
 
 - Checking running processes coming from analysis tools (Ghidra, IDA, x64dbg, Wireshark ...) can also be very useful.
+
 
 I hope you could learn something :)
