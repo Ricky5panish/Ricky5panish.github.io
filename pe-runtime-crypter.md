@@ -73,10 +73,15 @@ We create a new process in suspended mode into which we can inject the code and 
 The important things we do here are:
 
 `CreateProcess`: creating new process in a suspended mode for the injection.
+
 `GetThreadContext`: retrieves the context of the specified thread.
+
 `VirtualAllocEx`: allocates memory within the suspended process's address space.
+
 `WriteProcessMemory`: writes data of the PE file into the allocated memory of the suspended process.
+
 `SetThreadContext`: sets the RCX register to the entry point of the executable.
+
 `ResumeThread`: resumes the thread of the suspended process.
 
 ...
@@ -133,10 +138,10 @@ I created a x64 powershell_reverse_tcp with Metasploit to test the detection rat
 - Theoretically you could also program the whole stub in another more exotic language like GoLang.
 
 
-- To avoid dynamic analysis like sandboxing we can take a look at the hardware specifications of the system at the beginning of our stub. So we can prevent further execution of our code if e.g.
-hard disk < 100 GB
-RAM < 2 GB
-CPU cores < 2
+- To avoid dynamic analysis like sandboxing we can take a look at the hardware specifications of the system at the beginning of our stub. So we can prevent further execution of our code if...
+1. hard disk < 100 GB
+2. RAM < 2 GB
+3. CPU cores < 2
 
 - An idea could also be a user interaction like a MSG box to prevent automated analysis of further code.
 
