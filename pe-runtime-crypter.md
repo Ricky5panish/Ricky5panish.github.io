@@ -100,8 +100,8 @@ int main() {
 
 
 Finally we have to execute the decrypted code. Normally the OS Loader does all the work (mapping sections of an executable into memory, performing address relocation fix-ups if necessary, resolving function addresses and creating Import Address Table ... ) to execute a PE file correctly on the system. The difficulty here is that we are not running an executable from disk but from memory.
-We could write our own PE loader algorithm like this POC by Amit Malik https://securityxploded.com/memory-execution-of-executable.php
-or implement an extended, more complex loader like this https://github.com/abhisek/Pe-Loader-Sample/blob/master/src/PeLdr.cpp from abhisek.
+We could write our own PE loader algorithm like [this](https://securityxploded.com/memory-execution-of-executable.php) POC by Amit Malik
+or implement an extended, more complex loader like [this](https://github.com/abhisek/Pe-Loader-Sample/blob/master/src/PeLdr.cpp) from abhisek.
 
 I decided to use a process hollowing technique which is a bit easier to implement.
 We create a new process in suspended mode into which we can inject the code and then run it.
@@ -319,22 +319,22 @@ Congratulations we have coded our own x64 PE runtime crypter!
 
 ## Lets test!
 I have taken a new C++ window application for testing.
-!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/test.gif)
+![](https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/test.gif)
 
 ### It works :)
 
 In the task manager we see our window application running in a new process under our stub.
-!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/taskmgr.png)
+![](https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/taskmgr.png)
 
 If we take a look at the stub with CFF Explorer we can find our attached file under "resources". Also it is clear to see that the file is encrypted.
-!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/encrypted.png)
+![](https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/encrypted.png)
 
 I created a x64 powershell_reverse_tcp with Metasploit to test the detection rate.
 Here we see the fresh payload from metasploit
-!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/msfPayload.png)
+![](https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/msfPayload.png)
 
 And here the crypted payload
-!(https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/crypted.png)
+![](https://github.com/Ricky5panish/Ricky5panish.github.io/blob/main/assets/images/crypted.png)
 
 ## Tips for improvement
 - In any case, a better encryption method like AES would be much saver as some AVs are able to crack XOR. 
