@@ -311,7 +311,7 @@ Now we have to add the encrypted data as resource to our stub. For this we use `
 Before compiling we insert the raw code as byte array into our code.
 I use the HxD hexeditor to open my stub.exe and export the raw code to a .c file.
 
-<img src="assets/images/embed.gif">
+<img src="assets/images/embed.gif" width="70%" height="70%">
 
 This .c file contains a byte array from our stub which we now simply copy and replace with our placeholder above the main function.
 We also compile our crypter in release mode aaand...
@@ -321,25 +321,25 @@ Congratulations we have coded our own x64 PE runtime crypter!
 ## Lets test!
 I have taken a new C++ window application for testing.
 
-<img src="assets/images/test.gif">
+<img src="assets/images/test.gif" width="70%" height="70%">
 
 ### It works :)
 
 In the task manager we see our window application running in a new process under our stub.
-<img src="assets/images/taskmgr.PNG">
+<img src="assets/images/taskmgr.PNG" width="70%" height="70%">
 
 If we take a look at the stub with CFF Explorer we can find our attached file under "resources". Also it is clear to see that the file is encrypted.
 
-<img src="assets/images/encrypted.PNG">
+<img src="assets/images/encrypted.PNG" width="70%" height="70%">
 
 I created a x64 powershell_reverse_tcp with Metasploit to test the detection rate.
-Here we see the fresh payload from metasploit
+Here we see the fresh payload from metasploit.
 
-<img src="assets/images/msfPayload.png">
+<img src="assets/images/msfPayload.png" width="70%" height="70%">
 
-And here the crypted payload
+And here the crypted payload.
 
-<img src="assets/images/crypted.png">
+<img src="assets/images/crypted.png" width="70%" height="70%">
 
 ## Tips for improvement
 - In any case, a better encryption method like AES would be much saver as some AVs are able to crack XOR. 
