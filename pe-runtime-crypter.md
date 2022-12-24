@@ -327,7 +327,7 @@ I have taken a new C++ window application for testing.
 In the task manager we see our window application running in a new process under our stub.
 <img src="assets/images/taskmgr.PNG" width="70%" height="70%">
 
-If we take a look at the stub with CFF Explorer we can find our attached file under "resources". Also it is clear to see that the file is encrypted.
+If we take a look at the stub with CFF Explorer we can find our attached file under "resource editor". Also it is clear to see that the file is encrypted.
 
 <img src="assets/images/encrypted.PNG" width="70%" height="70%">
 
