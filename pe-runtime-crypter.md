@@ -81,7 +81,7 @@ unsigned char *GetResource(int resourceId, char* resourceString, unsigned long* 
 
 
 Now we write the main function. First we hide the console window. After that we call
-the GetResource function with our parameters and decrypt the returned code byte by byte with XOR and our key (resource name "132", resource type "BIN", and the key "k" are freely selectable, but must be identical later in the crypter).
+the GetResource function with our parameters and decrypt the returned code byte by byte with XOR and our key (resource name "132", resource type "BIN" and the key "k" are freely selectable, but must be identical later in the crypter).
 ```c++
 int main() {
     ShowWindow(GetConsoleWindow(), SW_HIDE);
