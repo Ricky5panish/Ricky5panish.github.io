@@ -14,7 +14,7 @@ Crypter are used by hackers / penetration testers to evade antivirus detection b
 
 Anti-virus software (AV) nowadays has three to detect malware:
 
-(static) signature based detection: the AV checks the hashes (eg MD5, SHA256 ...) of a file against known malware hashes from a large database.
+(static) signature based detection: the AV checks the hashes (e.g. MD5, SHA256 ...) of a file against known malware hashes from a large database.
 
 (static) heuristic detection: the AV checks a file for code characteristics e.g. functions which are known used by malware.
 
