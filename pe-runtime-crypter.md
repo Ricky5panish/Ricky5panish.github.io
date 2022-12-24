@@ -41,7 +41,7 @@ As you can see, malware is very much about operating under the radar of security
 the stub program is our "dummy" that later holds our malware (or any other x64 PE) in encrypted form. So the "only" thing our stub will do is:
 - search inside itself for the embedded resource
 - decrypt the found resource
-- execute the decrypted resource in memory (hardest part)
+- execute the decrypted image in memory (hardest part)
 
 
 # crypter development
