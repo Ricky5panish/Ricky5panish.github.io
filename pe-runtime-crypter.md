@@ -240,7 +240,6 @@ int main(int argc, char* argv[]) {
 
 Now we check the header of the image to make sure we are working with a x64 PE.
 ```c++
-cout << "Validate input file as x64 PE... ";
     IMAGE_DOS_HEADER* _dosHeader = (PIMAGE_DOS_HEADER) fileBuff;
     IMAGE_NT_HEADERS64* _ntHeader = PIMAGE_NT_HEADERS64)(DWORD64(fileBuff) + _dosHeader->e_lfanew);
     bool is64 = _ntHeader->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64;
