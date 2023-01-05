@@ -8,7 +8,7 @@ layout: default
 
 In the following examples I will show how we program a PE runtime crypter for x64 applications in C++.
 Prior knowledge of C++, WinAPI and PE file format is welcome.
-Crypter are used by hackers / penetration testers to evade antivirus detection by encrypting malware. This makes it possible to place and execute the malware on the target system without alarms.
+Crypter are used by "hackers" to evade antivirus detection by encrypting malware. This makes it possible to place and execute the malware on the target system without alarms.
 
 ## Detection options
 
@@ -342,7 +342,8 @@ And here the crypted payload.
 
 ## Tips for improvement
 - In any case, a better encryption method like AES would be much saver as some AVs are able to crack XOR. 
-- Hardcoded encryption keys are also horrible for security. I strongly recommend to use functions for building such sensible data at runtime.
+- Hardcoded encryption keys are also horrible for security. I strongly recommend to use functions for building such sensible data at runtime. Or simply download the encryption key from a server.
+- A neat trick is to bruteforce our own encryption key. Of course we then have to be careful with our key length and brute force algorithm to achieve a suitable cracking time.
 - A different technique to run our PE could also decrease the detection rate because process hollowing is already noticeable.
 - Adding a code signature to our stub also makes the application look more serious to AVs.
 - Theoretically we could program the whole stub in another more exotic language like GoLang.
@@ -352,6 +353,8 @@ And here the crypted payload.
 1. hard disk < 100 GB
 2. RAM < 2 GB
 3. CPU cores < 2
+
+- We can delay bad actions to trick the sandbox. Of curse a sandbox will simply skip if we try to `Sleep`. But if we use self brutforcing as I mentioned before we have a good delay.
 
 - An idea could also be a user interaction like a MSG box to prevent automated analysis of further code.
 
