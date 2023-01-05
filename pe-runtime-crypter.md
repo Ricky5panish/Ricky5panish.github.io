@@ -356,7 +356,7 @@ And here the crypted payload.
 - An idea could also be a user interaction like a MSG box to prevent automated analysis of further code.
 
 - Additionaly we can look for VM artifacts to identify a virtualized environment.
-This could be files like "C:\Windows\System32\VBox*.dll" but also registry entries.
+This could be files like `C:\Windows\System32\VBox*.dll` but also registry entries.
 
 - Checking running processes coming from analysis tools (Ghidra, IDA, x64dbg, Wireshark ...) can also be very useful.
 
