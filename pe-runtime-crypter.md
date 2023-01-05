@@ -104,7 +104,7 @@ We could write our own PE loader algorithm like [this](https://securityxploded.c
 or implement an extended, more complex loader like [this](https://github.com/abhisek/Pe-Loader-Sample/blob/master/src/PeLdr.cpp) from abhisek.
 
 I decided to use a process hollowing technique which is a bit easier to implement.
-We create a new process in suspended mode into which we can inject the code and then run it.
+We create a new process in suspended mode in which we can inject the code and then run it.
 The important things we do here are:
 
 `CreateProcess`: creating new process in a suspended mode for the injection.
