@@ -343,7 +343,7 @@ And here the crypted payload.
 ## Tips for improvement
 - In any case, a better encryption method like AES would be much saver as some AVs are able to crack XOR. 
 - Hardcoded encryption keys are also horrible for security. I strongly recommend to use functions for building such sensible data at runtime. Or simply download the encryption key from a server.
-- A neat trick is to bruteforce our own encryption key. Of course we then have to be careful with our key length and brute force algorithm to achieve a suitable cracking time.
+- A neat trick is to bruteforce our own encryption key. Of course we then have to be careful with our key length and bruteforce algorithm to achieve a suitable cracking time.
 - A different technique to run our PE could also decrease the detection rate because process hollowing is already noticeable.
 - Adding a code signature to our stub also makes the application look more serious to AVs.
 - Theoretically we could program the whole stub in another more exotic language like GoLang.
