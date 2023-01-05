@@ -10,7 +10,7 @@ In the following examples I will show how we program a PE runtime crypter for x6
 Prior knowledge of C++, WinAPI and PE file format is welcome.
 Crypter are used by hackers / penetration testers to evade antivirus detection by encrypting malware. This makes it possible to place and execute the malware on the target system without alarms.
 
-## detection options
+## Detection options
 
 Anti-virus software (AV) nowadays has three to detect malware:
 
@@ -35,7 +35,7 @@ This is to our advantage because malware is less likely to be detected if we dev
 
 As you can see, malware is very much about operating under the radar of security analysts/researchers and AVs.
 
-## steps to do:
+## Steps to do:
 
 # stub development
 the stub program is our "dummy" that later holds our malware (or any other x64 PE) in encrypted form. So the "only" thing our stub will do is:
@@ -44,7 +44,7 @@ the stub program is our "dummy" that later holds our malware (or any other x64 P
 - execute the decrypted image in memory (hardest part)
 
 
-# crypter development
+# Crypter development
 the crypter holds our hardcoded stub we programmed before (as a template) and writes it to disk. Then it reads the PE file we want to obfuscate and inserts it in encrypted form as a resource into our stub.
 - read the input PE 
 - validate input file as x64
@@ -345,7 +345,7 @@ And here the crypted payload.
 - Hardcoded encryption keys are also horrible for security. I strongly recommend to use functions for building such sensible data at runtime.
 - A different technique to run our PE could also decrease the detection rate because process hollowing is already noticeable.
 - Adding a code signature to our stub also makes the application look more serious to AVs.
-- Theoretically you could also program the whole stub in another more exotic language like GoLang.
+- Theoretically we could program the whole stub in another more exotic language like GoLang.
 
 
 - To avoid dynamic analysis like sandboxing we can take a look at the hardware specifications of the system at the beginning of our stub. So we can prevent further execution of our code if...
@@ -355,7 +355,7 @@ And here the crypted payload.
 
 - An idea could also be a user interaction like a MSG box to prevent automated analysis of further code.
 
-- We can also look for VM artifacts to identify a virtualized environment.
+- Additionaly we can look for VM artifacts to identify a virtualized environment.
 This could be files like "C:\Windows\System32\VBox*.dll" but also registry entries.
 
 - Checking running processes coming from analysis tools (Ghidra, IDA, x64dbg, Wireshark ...) can also be very useful.
