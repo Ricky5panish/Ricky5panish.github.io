@@ -6,7 +6,7 @@ layout: default
 
 ## Introduction
 
-In the following examples I will show how we program a PE runtime crypter for x64 applications in C++.
+In the following examples I will show how we program a PE runtime crypter for native x64 applications in C++.
 Prior knowledge of C++, WinAPI and PE file format is welcome.
 Crypter are used by "hackers" to evade antivirus detection by encrypting malware. This makes it possible to place and execute the malware on the target system without alearts.
 
@@ -21,7 +21,7 @@ Anti-virus software (AV) nowadays has three options to detect malware:
 dynamic detection: in this case, the AV executes the file in a "safe environment" like a virtual machine (VM) or sandbox to analyze the behavior of the file at runtime.
 
 Our crypter will prevent signature based detection and also mostly heuristic detection of AVs.
-At the end I will give some tips to prevent dynamic analysis and also make it a little harder for reverse engineers and security researchers.
+At the end I will offer some tips to prevent dynamic analysis and also make it a little harder for reverse engineers and security researchers.
 The main task of our crypter is to obfuscate an executable through encryption and thereby bypass the signature-based detection of AVs. To ensure this, the decrypted code must must be executed in memory so that it never touches the hard disk.
 
 ## Why C++?
