@@ -8,11 +8,11 @@ layout: default
 
 In the following examples I will show how we program a PE runtime crypter for x64 applications in C++.
 Prior knowledge of C++, WinAPI and PE file format is welcome.
-Crypter are used by "hackers" to evade antivirus detection by encrypting malware. This makes it possible to place and execute the malware on the target system without alarms.
+Crypter are used by "hackers" to evade antivirus detection by encrypting malware. This makes it possible to place and execute the malware on the target system without alearts.
 
 ## Detection options
 
-Anti-virus software (AV) nowadays has three to detect malware:
+Anti-virus software (AV) nowadays has three options to detect malware:
 
 (static) signature based detection: the AV checks the hashes (e.g. MD5, SHA256 ...) of a file against known malware hashes from a large database.
 
